@@ -1,4 +1,14 @@
 #!/bin/bash
+date created: 1 april 2024
+
+modifications:
+01042024 created and converted code from .py to .sh
+
+
+
+
+
+
 
 # Function to generate a random number within a range
 generate_random_number() {
