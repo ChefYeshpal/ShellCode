@@ -1,12 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-
 # Load the data
-data = pd.read_csv('battery_log.csv', header=None, names=['Timestamp', 'Battery_Percentage'])
+data = pd.read_csv('battery_log.csv')
 
-# Print columns to check if 'Timestamp" is correct
+# Print columns to check if 'Timestamp' is correct
 print(data.columns)
 
 # Convert the Timestamp column to datetime
@@ -28,4 +26,6 @@ plt.savefig('battery_plot.png')
 
 # Show the plot
 plt.show()
+
+
 
