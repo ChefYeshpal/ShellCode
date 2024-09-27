@@ -1,19 +1,22 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load the data, assuming there are no headers in the CSV file
-data = pd.read_csv('battery_log.csv', header=None)
+# Load the data and specify column names explicitly if needed
+data = pd.read_csv('battery_log.csv', names=['Timestamp', 'Battery_Percentage'], skiprows=1)
 
-# Manually set the column names
-data.columns = ['Timestamp', 'Battery_Percentage']
+# Strip any leading/trailing spaces from column names
+data.columns = data.columns.str.strip()
 
-# Print columns to confirm 'Timestamp' and 'Battery_Percentage'
+# Print columns to check if 'Timestamp' is correct
 print("Columns:", data.columns)
 
-# Convert the Timestamp column to datetime
-data['Timestamp'] = pd.to_datetime(data['Timestamp'])
+# Convert the Timestamp column to datetime, handling parsing errors
+data['Timestamp'] = pd.to_datetime(data['Timestamp'], errors='coerce')
 
-# Remove the '%' sign from the Battery_Percentage column and convert it to float
+# Drop any rows where the Timestamp couldn't be parsed (i.e., rows with NaT in the 'Timestamp' column)
+data.dropna(subset=['Timestamp'], inplace=True)
+
+# Convert Battery_Percentage to float, removing the '%' sign
 data['Battery_Percentage'] = data['Battery_Percentage'].str.rstrip('%').astype(float)
 
 # Plot the data
