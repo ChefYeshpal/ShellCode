@@ -1,37 +1,55 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load the data and specify column names explicitly if needed
-data = pd.read_csv('battery_log.csv', names=['Timestamp', 'Battery_Percentage'], skiprows=1)
+# Function to convert time strings to hours
+def convert_time_to_hours(time_str):
+    # Handle NaN or float values by returning 0 or some default value
+    if pd.isna(time_str) or isinstance(time_str, float):
+        return 0.0
+    
+    try:
+        # Otherwise, process the string normally
+        time_parts = time_str.split()
+        hours = 0
 
-# Strip any leading/trailing spaces from column names
-data.columns = data.columns.str.strip()
+        for part in time_parts:
+            if 'h' in part:
+                hours += int(part.replace('h', ''))
+            elif 'm' in part:
+                hours += int(part.replace('m', '')) / 60  # convert minutes to hours
+        return hours
+    except ValueError:
+        print(f"Warning: Could not parse time string '{time_str}'")
+        return 0.0  # Default to 0 hours if parsing fails
 
-# Print columns to check if 'Timestamp' is correct
-print("Columns:", data.columns)
+# Load the battery log data from CSV
+data = pd.read_csv('battery_log.csv')
 
-# Convert the Timestamp column to datetime, handling parsing errors
+# Convert the Timestamp column to datetime
 data['Timestamp'] = pd.to_datetime(data['Timestamp'], errors='coerce')
 
-# Drop any rows where the Timestamp couldn't be parsed (i.e., rows with NaT in the 'Timestamp' column)
-data.dropna(subset=['Timestamp'], inplace=True)
+# Convert Battery_Percentage to numeric (optional, if needed)
+data['Battery_Percentage'] = pd.to_numeric(data['Battery_Percentage'], errors='coerce')
 
-# Convert Battery_Percentage to float, removing the '%' sign
-data['Battery_Percentage'] = data['Battery_Percentage'].str.rstrip('%').astype(float)
+# Apply the conversion function to Time_Remaining (if Time_Remaining exists)
+if 'Time_Remaining' in data.columns:
+    data['Time_Remaining'] = data['Time_Remaining'].apply(convert_time_to_hours)
 
-# Plot the data
-plt.figure(figsize=(10, 5))
-plt.plot(data['Timestamp'], data['Battery_Percentage'], marker='o')
+# Plotting battery percentage over time
+plt.figure(figsize=(10, 6))
+plt.plot(data['Timestamp'], data['Battery_Percentage'], label='Battery Percentage', marker='o')
 
-plt.title('Battery Percentage Over Time')
+# Optional: Plot Time Remaining if that column exists
+if 'Time_Remaining' in data.columns:
+    plt.plot(data['Timestamp'], data['Time_Remaining'], label='Time Remaining (hours)', marker='x')
+
 plt.xlabel('Timestamp')
-plt.ylabel('Battery Percentage (%)')
+plt.ylabel('Battery Percentage / Time Remaining (hours)')
+plt.title('Battery Log Over Time')
+plt.legend()
 plt.grid(True)
 plt.xticks(rotation=45)
 plt.tight_layout()
-
-# Save the plot as a PNG file
-plt.savefig('battery_plot.png')
 
 # Show the plot
 plt.show()
