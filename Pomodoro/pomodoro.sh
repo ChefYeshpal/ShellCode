@@ -16,6 +16,7 @@ read -r TASK
 # Log session start
 SESSION_START=$(date '+%H:%M:%S')
 echo "Session start: $SESSION_START"
+echo ""
 echo "====== $(date '+%d-%m-%Y %H:%M:%S') ======" | tee -a "$LOG_FILE"
 echo "Task: $TASK" | tee -a "$LOG_FILE"
 
@@ -27,6 +28,7 @@ session_timer() {
 
     start_time=$(date '+%H:%M:%S')
     echo "Start time: $start_time"
+    echo ""
     echo "$(date '+%d-%m-%Y %H:%M:%S') - $label start" | tee -a "$LOG_FILE"
 
     # Countdown
@@ -40,6 +42,7 @@ session_timer() {
 
     end_time=$(date '+%H:%M:%S')
     echo "End Time: $end_time"
+    echo ""
     echo "$(date '+%d-%m-%Y %H:%M:%S') - $label end" | tee -a "$LOG_FILE"
 }
 
