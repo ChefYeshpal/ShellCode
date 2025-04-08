@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Configuration
-WORK_TIME=2   # Work time in minutes
-BREAK_TIME=1  # Break time in minutes
+WORK_TIME=25   # Work time in minutes
+BREAK_TIME=10  # Break time in minutes
 CYCLES=1      # Number of cycles
 
 # Determine script directory and log file
